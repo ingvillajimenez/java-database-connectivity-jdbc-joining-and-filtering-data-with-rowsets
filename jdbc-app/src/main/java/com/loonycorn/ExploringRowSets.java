@@ -12,9 +12,9 @@ public class ExploringRowSets {
 
         try (Connection conn = DBUtils.getMysqlConnection("DeliveryService")) {
 
-            CachedRowSet partnersRS = DBUtils.getCachedRowSet("");
-            partnersRS.setCommand("select * from delpartners");
-            partnersRS.execute(conn);
+            CachedRowSet vehicleRS = DBUtils.getCachedRowSet("");
+            vehicleRS.setCommand("select * from delvehicles");
+            vehicleRS.execute(conn);
 
             CachedRowSet deliveriesRS = DBUtils.getCachedRowSet("");
             deliveriesRS.setCommand("select * from deliveries");
@@ -22,34 +22,77 @@ public class ExploringRowSets {
 
             JoinRowSet joinRS = RowSetProvider.newFactory().createJoinRowSet();
 
-            joinRS.addRowSet(partnersRS, "pid");
-            joinRS.addRowSet(deliveriesRS, "pid");
+            // left outer join
+            joinRS.setJoinType(JoinRowSet.LEFT_OUTER_JOIN);
+            //java.sql.SQLException: This type of join is not supported
+            //	at java.sql.rowset/com.sun.rowset.JoinRowSetImpl.setJoinType(JoinRowSetImpl.java:554)
+            //	at com.loonycorn.ExploringRowSets.main(ExploringRowSets.java:25)
+
+            joinRS.addRowSet(vehicleRS, "vid");
+            joinRS.addRowSet(deliveriesRS, "vid");
 
             int rowNum = 1;
 
             while (joinRS.next()) {
 
-                String fName = joinRS.getString("first_name");
-                boolean isFT = joinRS.getBoolean("is_fulltime");
+                String color = joinRS.getString("color");
+                String vType = joinRS.getString("vehicle_type");
                 String destination = joinRS.getString("destination");
 
                 String stdData = "\nRow #%d: %s | %s | %s";
-                System.out.format(stdData, rowNum, fName, isFT, destination);
-                //Row #1: Kylie | false | Financial District
-                //Row #2: Pam | true | Jersey City
-                //Row #3: Eric | false | Astoria
-                //Row #4: Eric | false | Harlem
-                //Row #5: Adam | true | South Slope
+                System.out.format(stdData, rowNum, color, vType, destination);
                 rowNum++;
             }
 
             joinRS.close();
-            partnersRS.close();
+            vehicleRS.close();
             deliveriesRS.close();
         }
         catch (SQLException ex) {
             ex.printStackTrace();
         }
+
+//        try (Connection conn = DBUtils.getMysqlConnection("DeliveryService")) {
+//
+//            CachedRowSet vehicleRS = DBUtils.getCachedRowSet("");
+//            vehicleRS.setCommand("select * from delvehicles");
+//            vehicleRS.execute(conn);
+//
+//            CachedRowSet deliveriesRS = DBUtils.getCachedRowSet("");
+//            deliveriesRS.setCommand("select * from deliveries");
+//            deliveriesRS.execute(conn);
+//
+//            JoinRowSet joinRS = RowSetProvider.newFactory().createJoinRowSet();
+//
+//            // inner join by default
+//            joinRS.addRowSet(vehicleRS, "vid");
+//            joinRS.addRowSet(deliveriesRS, "vid");
+//
+//            int rowNum = 1;
+//
+//            while (joinRS.next()) {
+//
+//                String color = joinRS.getString("color");
+//                String vType = joinRS.getString("vehicle_type");
+//                String destination = joinRS.getString("destination");
+//
+//                String stdData = "\nRow #%d: %s | %s | %s";
+//                System.out.format(stdData, rowNum, color, vType, destination);
+//                //Row #1: White | Truck | Harlem
+//                //Row #2: Grey | Truck | Financial District
+//                //Row #3: Blue | Van | Jersey City
+//                //Row #4: Red | Pickup | Astoria
+//                //Row #5: Red | Pickup | South Slope
+//                rowNum++;
+//            }
+//
+//            joinRS.close();
+//            vehicleRS.close();
+//            deliveriesRS.close();
+//        }
+//        catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
 
     }
 }
