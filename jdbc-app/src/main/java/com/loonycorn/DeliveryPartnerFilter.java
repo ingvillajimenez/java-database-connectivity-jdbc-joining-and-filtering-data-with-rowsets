@@ -9,19 +9,26 @@ public class DeliveryPartnerFilter implements Predicate {
 
     private int lowRate;
     private int highRate;
-    private String colName = null;
-    private int colNumber = -1;
+    private boolean isFT;
+    private String colNameRate = null;
+    private String colNameIsFT = null;
+    private int colNumberRate = -1;
+    private int colNumberIsFT = -1;
 
-    public DeliveryPartnerFilter(int lo, int hi, int colNumber) {
+    public DeliveryPartnerFilter(int lo, int hi, boolean isFT, int colNumberRate, int colNumberIsFT) {
         this.lowRate = lo;
         this.highRate = hi;
-        this.colNumber = colNumber;
+        this.isFT = isFT;
+        this.colNumberRate = colNumberRate;
+        this.colNumberIsFT = colNumberIsFT;
     }
 
-    public DeliveryPartnerFilter(int lo, int hi, String colName) {
+    public DeliveryPartnerFilter(int lo, int hi, boolean isFT, String colNameRate, String colNameIsFT) {
         this.lowRate = lo;
         this.highRate = hi;
-        this.colName = colName;
+        this.isFT = isFT;
+        this.colNameRate = colNameRate;
+        this.colNameIsFT = colNameIsFT;
     }
 
     @Override
@@ -30,6 +37,7 @@ public class DeliveryPartnerFilter implements Predicate {
         if (rs == null) {
 
             return false;
+
         }
 
         FilteredRowSet frs = (FilteredRowSet) rs;
@@ -37,9 +45,12 @@ public class DeliveryPartnerFilter implements Predicate {
 
         try {
 
-            double columnValue = frs.getDouble(this.colNumber);
+            double columnValueRate = frs.getDouble(this.colNumberRate);
+            boolean columnValueIsFT = frs.getBoolean(this.colNumberIsFT);
 
-            if ((columnValue >= this.lowRate) && (columnValue <= this.highRate)) {
+            if ((columnValueRate >= this.lowRate)
+                    && (columnValueRate <= this.highRate)
+                    && (columnValueIsFT == this.isFT)) {
 
                 evaluation = true;
 
@@ -57,7 +68,7 @@ public class DeliveryPartnerFilter implements Predicate {
 
         boolean evalution = true;
 
-        if (colNumber == columnNumber) {
+        if (colNumberRate == columnNumber) {
 
             double columnValue = ((Double) value).doubleValue();
 
@@ -70,6 +81,7 @@ public class DeliveryPartnerFilter implements Predicate {
                 evalution = false;
 
             }
+
         }
 
         return evalution;
@@ -80,7 +92,7 @@ public class DeliveryPartnerFilter implements Predicate {
 
         boolean evaluation = true;
 
-        if (columnName.equalsIgnoreCase(this.colName)) {
+        if (columnName.equalsIgnoreCase(this.colNameRate)) {
 
             double columnValue = ((Double) value).doubleValue();
 
@@ -93,6 +105,7 @@ public class DeliveryPartnerFilter implements Predicate {
                 evaluation = false;
 
             }
+
         }
 
         return evaluation;

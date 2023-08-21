@@ -29,23 +29,19 @@ public class ExploringRowSets {
                     + "from delpartners");
             partnersRS.execute(conn);
 
-            DeliveryPartnerFilter zeroToTwentyFilter
-                    = new DeliveryPartnerFilter(0, 20, 3);
+            DeliveryPartnerFilter customFilter
+                    = new DeliveryPartnerFilter(19, 21, false, 3, 4);
 
-            partnersRS.setFilter(zeroToTwentyFilter);
+            partnersRS.setFilter(customFilter);
 
             int rowNum = 1;
 
             while (partnersRS.next()) {
 
                 displayRow("Row #" + rowNum, partnersRS);
-                //Row #1: Adam | Bell | 18.50 | true
+                //Row #1: Stacey | Shields | 21.00 | false
                 //
-                //Row #2: Pam | Cruz | 19.00 | true
-                //
-                //Row #3: Marie | Woods | 19.00 | true
-                //
-                //Row #4: Pablo | Hernandez | 20.00 | false
+                //Row #2: Pablo | Hernandez | 20.00 | false
                 rowNum++;
             }
 
@@ -64,26 +60,91 @@ public class ExploringRowSets {
 //                    + "from delpartners");
 //            partnersRS.execute(conn);
 //
+//            DeliveryPartnerFilter customFilter
+//                    = new DeliveryPartnerFilter(19, 21, true, 3, 4);
+//
+//            partnersRS.setFilter(customFilter);
+//
 //            int rowNum = 1;
 //
 //            while (partnersRS.next()) {
 //
 //                displayRow("Row #" + rowNum, partnersRS);
-//                //Row #1: Adam | Bell | 18.50 | true
+//                //Row #1: Pam | Cruz | 19.00 | true
 //                //
-//                //Row #2: Eric | Jones | 22.75 | false
+//                //Row #2: Marie | Woods | 19.00 | true
+//                rowNum++;
+//            }
+//
+//            partnersRS.close();
+//
+//        }
+//        catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+
+//        try (Connection conn = DBUtils.getMysqlConnection("DeliveryService")) {
+//
+//            FilteredRowSet partnersRS = RowSetProvider.newFactory().createFilteredRowSet();
+//
+//            partnersRS.setCommand("select first_name, last_name, hourly_rate, is_fulltime "
+//                    + "from delpartners");
+//            partnersRS.execute(conn);
+//
+//            DeliveryPartnerFilter rateRangeFilter
+//                    = new DeliveryPartnerFilter(19, 21, 3);
+//
+//            partnersRS.setFilter(rateRangeFilter);
+//
+//            int rowNum = 1;
+//
+//            while (partnersRS.next()) {
+//
+//                displayRow("Row #" + rowNum, partnersRS);
+//                //Row #1: Pam | Cruz | 19.00 | true
 //                //
-//                //Row #3: Pam | Cruz | 19.00 | true
+//                //Row #2: Stacey | Shields | 21.00 | false
 //                //
-//                //Row #4: Stacey | Shields | 21.00 | false
+//                //Row #3: Marie | Woods | 19.00 | true
 //                //
-//                //Row #5: Marie | Woods | 19.00 | true
+//                //Row #4: Pablo | Hernandez | 20.00 | false
+//                rowNum++;
+//            }
+//
+//            partnersRS.close();
+//
+//        }
+//        catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+
+//        try (Connection conn = DBUtils.getMysqlConnection("DeliveryService")) {
+//
+//            FilteredRowSet partnersRS = RowSetProvider.newFactory().createFilteredRowSet();
+//
+//            partnersRS.setCommand("select first_name, last_name, hourly_rate, is_fulltime "
+//                    + "from delpartners");
+//            partnersRS.execute(conn);
+//
+//            DeliveryPartnerFilter moreThanTwentyFilter
+//                    = new DeliveryPartnerFilter(20, 500, 3);
+//
+//            partnersRS.setFilter(moreThanTwentyFilter);
+//
+//            int rowNum = 1;
+//
+//            while (partnersRS.next()) {
+//
+//                displayRow("Row #" + rowNum, partnersRS);
+//                //Row #1: Eric | Jones | 22.75 | false
 //                //
-//                //Row #6: Pablo | Hernandez | 20.00 | false
+//                //Row #2: Stacey | Shields | 21.00 | false
 //                //
-//                //Row #7: Kylie | Kass | 22.00 | false
+//                //Row #3: Pablo | Hernandez | 20.00 | false
 //                //
-//                //Row #8: Brian | Walters | 22.00 | false
+//                //Row #4: Kylie | Kass | 22.00 | false
+//                //
+//                //Row #5: Brian | Walters | 22.00 | false
 //                rowNum++;
 //            }
 //
